@@ -31,6 +31,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if(\Illuminate\Support\Facades\Auth::user())
                         {{ \Illuminate\Support\Facades\Auth::user()->name }}
+{{--                        {{ \Illuminate\Support\Facades\Redis::get('username') }}--}}
                     @else
                         Dropdown
                     @endif

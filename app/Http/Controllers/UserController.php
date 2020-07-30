@@ -6,7 +6,9 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
@@ -24,14 +26,20 @@ class UserController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $users = User::all();
-        foreach ($users as $user)
-        {
-            if ($request->email == $user->email){
-                Session::flash('error','invalid email, try again!');
-                return view('register');
-            }
-        }
+//        $users = User::all();
+        $user = User::where('email','=',$request->email)->first();
+//        foreach ($users as $user)
+//        {
+//            if ($request->email == $user->email){
+//                Session::flash('error','invalid email, try again!');
+//                return view('register');
+//            }
+//        }
+        if ($user){
+               Session::flash('error','invalid email, try again!');
+               return view('register');
+           }
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -55,6 +63,8 @@ class UserController extends Controller
             'password' => $password
         ];
         if (Auth::attempt($user)){
+//            $redis = Redis::connection();
+//            $redis->set('username',Auth::user()->name);
             return redirect()->route('index');
         } else {
             Session::flash('error','email or password incorrect');
