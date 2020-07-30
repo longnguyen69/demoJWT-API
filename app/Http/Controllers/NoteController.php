@@ -80,6 +80,7 @@ class NoteController extends Controller
             $note = NoteDetail::where('note_id', '=', $id)->first();
             $note->delete();
             $todo->delete();
+            activity()->log('delete todo ' . $todo->name);
             DB::commit();
             return redirect()->route('index');
         } catch (\Exception $exception) {
