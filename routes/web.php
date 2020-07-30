@@ -31,5 +31,6 @@ Route::middleware(['auth'])->group(function (){
     Route::post('{id}/update-todo','NoteController@update')->name('update.todo');
     Route::get('{id}/delete-todo', 'NoteController@destroy')->name('delete.todo');
     Route::get('search','NoteController@search')->name('search.todo');
+    Route::get('status/update-todo/{id?}','NoteController@updateStatus')->name('todo.change_status');
 });
 
