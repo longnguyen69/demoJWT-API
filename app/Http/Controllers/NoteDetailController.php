@@ -16,9 +16,9 @@ class NoteDetailController extends Controller
 
     public function store($note_id, Request $request)
     {
-        $note = NoteDetail::where('note_id','=',$note_id)->get();
-        $note[0]->desc = $request->desc;
-        $note[0]->save();
+        $note = NoteDetail::where('note_id','=',$note_id)->first();
+        $note->desc = $request->desc;
+        $note->save();
         return back();
     }
 }
