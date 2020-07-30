@@ -26,28 +26,26 @@
                     <td>{{ $todo->category->name }}</td>
                     <td>{{ $todo->created_at }}</td>
                     <td>
-                        <form method="post" action="#">
-                            @csrf
-                            <select name="status" id="status" class="form-control">
-
-                                <option value="{{ $todo->status }}">
-                                    @if($todo->status == 0)
-                                        <span style="color: red;" >Waiting</span>
-                                    @elseif($todo->status == 1)
-                                        <span style="color: green;">Doing</span>
-                                    @else
-                                        <span style="color: blue;">Done</span>
+                        <select name="status" data-id="{{ $todo->id }}" class="data form-control">
+                            @foreach($status as $value)
+                                <option value="{{ $value->id }}"
+                                        @if($todo->status == $value->id)
+                                        selected
                                     @endif
+                                >
+                                    {{ $value->status }}
                                 </option>
-                            </select>
-                        </form>
+                            @endforeach
+                        </select>
                     </td>
                     <td>
-                        @if($todo->status == 2)
-                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
+                        @if($todo->status == 3)
+                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')"
+                               href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @else
                             <a class="btn btn-success" href="{{ route('edit.todo',['id'=>$todo->id]) }}">Edit</a>
-                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
+                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')"
+                               href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @endif
                     </td>
                 </tr>
@@ -59,4 +57,11 @@
             </tbody>
         </table>
     </div>
+    {{--    <script>--}}
+    {{--        function changeStatus() {--}}
+    {{--            tt = document.getElementById('tt').value;--}}
+    {{--            console.log(tt);--}}
+
+    {{--        }--}}
+    {{--    </script>--}}
 @endsection

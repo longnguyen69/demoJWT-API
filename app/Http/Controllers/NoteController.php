@@ -6,6 +6,7 @@ use App\Category;
 use App\Http\Requests\StoreRequest;
 use App\Note;
 use App\NoteDetail;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,12 +18,14 @@ class NoteController extends Controller
     public function index()
     {
         $todos = Note::all();
-        return view('todo', compact('todos'));
+        $status = Status::all();
+        return view('todo', compact('todos','status'));
     }
 
     public function create()
     {
         $categories = Category::all();
+
         return view('create', compact('categories'));
     }
 
@@ -34,7 +37,7 @@ class NoteController extends Controller
             $todo = new Note();
             $todo->name = $request->name;
             $todo->category_id = $request->category;
-            $defaul = 0;
+            $defaul = 1;
             $todo->status = $defaul;
             $user = Auth::user()->id;
             $todo->user_id = $user;
@@ -88,5 +91,19 @@ class NoteController extends Controller
     {
         $todos = Note::where('name', 'LIKE', '%' . $request->search . '%')->get();
         return view('todo', compact('todos'));
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $todo = Note::find($id);
+        $todo->status = $request->input('status');
+        $todo->save();
+
+        return response()->json([
+            'success' => true,
+            'status' => '200',
+            'data' => $todo,
+            'status_todo' => $todo->status
+        ]);
     }
 }
