@@ -19,6 +19,7 @@ class NoteDetailController extends Controller
         $note = NoteDetail::where('note_id','=',$note_id)->first();
         $note->desc = $request->desc;
         $note->save();
+
         return back();
     }
 }

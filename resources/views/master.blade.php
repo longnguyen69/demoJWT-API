@@ -24,6 +24,11 @@
                     <a class="nav-link" href="{{route('show.login')}}">Login <span class="sr-only">(current)</span></a>
                 @endif
             </li>
+            <li class="nav-item active">
+                @if(\Illuminate\Support\Facades\Auth::user())
+                    <a class="nav-link" href="{{ route('log') }}">Log Activity</a>
+                @endif
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('show.register')}}">Register</a>
             </li>
@@ -31,13 +36,12 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if(\Illuminate\Support\Facades\Auth::user())
                         {{ \Illuminate\Support\Facades\Auth::user()->name }}
-{{--                        {{ \Illuminate\Support\Facades\Redis::get('username') }}--}}
                     @else
                         Dropdown
                     @endif
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Log Activity</a>
                     <a class="dropdown-item" href="#">Another action</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>

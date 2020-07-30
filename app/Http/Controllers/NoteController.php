@@ -39,13 +39,14 @@ class NoteController extends Controller
             $todo->category_id = $request->category;
             $defaul = 1;
             $todo->status = $defaul;
-            $user = Auth::user()->id;
-            $todo->user_id = $user;
+            $user = Auth::user();
+            $todo->user_id = $user->id;
             $todo->save();
             $todoDetail = new NoteDetail();
             $todoDetail->note_id = $todo->id;
             $todoDetail->save();
             DB::commit();
+            activity()->by($user)->log('add todo');
             Session::flash('success', 'Add todo completed!');
             return redirect()->route('show.create');
         } catch (\Exception $e) {
