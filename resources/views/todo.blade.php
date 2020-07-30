@@ -26,13 +26,21 @@
                     <td>{{ $todo->category->name }}</td>
                     <td>{{ $todo->created_at }}</td>
                     <td>
-                        @if($todo->status == 0)
-                            <span style="color: red;">Do not</span>
-                        @elseif($todo->status == 1)
-                            <span style="color: green;">Doing</span>
-                        @else
-                            <span style="color: blue;">Done</span>
-                        @endif
+                        <form method="post" action="#">
+                            @csrf
+                            <select name="status" id="status" class="form-control">
+
+                                <option value="{{ $todo->status }}">
+                                    @if($todo->status == 0)
+                                        <span style="color: red;" >Waiting</span>
+                                    @elseif($todo->status == 1)
+                                        <span style="color: green;">Doing</span>
+                                    @else
+                                        <span style="color: blue;">Done</span>
+                                    @endif
+                                </option>
+                            </select>
+                        </form>
                     </td>
                     <td>
                         @if($todo->status == 2)

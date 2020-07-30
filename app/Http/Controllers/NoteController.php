@@ -28,8 +28,9 @@ class NoteController extends Controller
 
     public function store(StoreRequest $request)
     {
-        DB::beginTransaction(); // start transaction in
+
         try {
+            DB::beginTransaction(); // start transaction
             $todo = new Note();
             $todo->name = $request->name;
             $todo->category_id = $request->category;
@@ -69,11 +70,18 @@ class NoteController extends Controller
 
     public function destroy($id)
     {
-        $todo = Note::findOrFail($id);
-        $note = NoteDetail::where('note_id', '=', $id)->get();
-        $note[0]->delete();
-        $todo->delete();
-        return redirect()->route('index');
+        try {
+            DB::beginTransaction();
+            $todo = Note::findOrFail($id);
+            $note = NoteDetail::where('note_id', '=', $id)->first();
+            $note->delete();
+            $todo->delete();
+            DB::commit();
+            return redirect()->route('index');
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return $exception->getMessage();
+        }
     }
 
     public function search(Request $request)
