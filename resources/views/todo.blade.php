@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             @forelse($todos as $key => $todo)
-                <tr>
+                <tr id="{{ $todo->id }}">
                     <th scope="row">{{ ++$key }}</th>
                     <td><a href="{{ route('show.note',['id'=>$todo->id]) }}">{{ $todo->name }}</a></td>
                     <td>{{ $todo->category->name }}</td>
@@ -40,12 +40,10 @@
                     </td>
                     <td>
                         @if($todo->status == 3)
-                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')"
-                               href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
+                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @else
                             <a class="btn btn-success" href="{{ route('edit.todo',['id'=>$todo->id]) }}">Edit</a>
-                            <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')"
-                               href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
+                            <a class="btn btn-warning delete" data-id="{{ $todo->id }}" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @endif
                     </td>
                 </tr>
@@ -57,11 +55,4 @@
             </tbody>
         </table>
     </div>
-    {{--    <script>--}}
-    {{--        function changeStatus() {--}}
-    {{--            tt = document.getElementById('tt').value;--}}
-    {{--            console.log(tt);--}}
-
-    {{--        }--}}
-    {{--    </script>--}}
 @endsection
