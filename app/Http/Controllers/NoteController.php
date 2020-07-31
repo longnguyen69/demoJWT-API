@@ -23,6 +23,7 @@ class NoteController extends Controller
         $status = Status::all();
         $redis = Redis::connection();
         $redis->set('todoList', "$todos");
+
 //        dd($redis->get('todoList'));
 //        $listTodo = $redis->get('todoList'); // json
 //        dd(json_decode($listTodo,true));

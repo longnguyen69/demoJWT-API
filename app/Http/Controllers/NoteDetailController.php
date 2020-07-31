@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\NoteDetail;
+use App\Recent\Recent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class NoteDetailController extends Controller
 {
-    public function show($note_id)
+    public function show(Recent $recent, $note_id)
     {
-        $todo = NoteDetail::where('note_id','=',$note_id)->get();
+        $todo = NoteDetail::where('note_id','=',$note_id)->first();
+        $recent->add($todo);
         return view('todoDetail',compact('todo'));
     }
 
