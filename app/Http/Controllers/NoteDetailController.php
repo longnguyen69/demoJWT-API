@@ -14,6 +14,7 @@ class NoteDetailController extends Controller
     {
         $todo = NoteDetail::where('note_id','=',$note_id)->first();
         $recent->add($todo);
+        dd(Redis::get('recent'));
         return view('todoDetail',compact('todo'));
     }
 
