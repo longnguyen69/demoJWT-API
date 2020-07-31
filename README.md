@@ -11,5 +11,7 @@ Setup web todo app:
 - V1.1
 - install redis, install redis extension php
 - install log Activity
+- update composer
+- => php artisan serve
 
 
