@@ -82,9 +82,12 @@
                     },
                     dataType: "json",
                     success: function (result) {
-                        if (result.success) {
+                        if (result.status_todo == 3) {
                             console.log(result);
                             // window.location.reload();
+                            $("#edit-" + todoId).hide();
+                        } else {
+                            $("#edit-" + todoId).show();
                         }
                     },
                     error: (error) => {

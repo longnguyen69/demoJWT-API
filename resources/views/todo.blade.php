@@ -42,7 +42,7 @@
                         @if($todo->status == 3)
                             <a class="btn btn-warning" onclick="return confirm('You sure delete todo?')" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @else
-                            <a class="btn btn-success" href="{{ route('edit.todo',['id'=>$todo->id]) }}">Edit</a>
+                            <a class="btn btn-success" id="edit-{{$todo->id}}" href="{{ route('edit.todo',['id'=>$todo->id]) }}" >Edit</a>
                             <a class="btn btn-warning delete" data-id="{{ $todo->id }}" href="{{ route('delete.todo',['id'=>$todo->id]) }}">Delete</a>
                         @endif
                     </td>
