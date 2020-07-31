@@ -27,25 +27,26 @@ class UserController extends Controller
     public function register(RegisterRequest $request)
     {
 //        $users = User::all();
-        $user = User::where('email','=',$request->email)->first();
-//        foreach ($users as $user)
-//        {
-//            if ($request->email == $user->email){
-//                Session::flash('error','invalid email, try again!');
-//                return view('register');
-//            }
-//        }
+        $user = User::where('email',$request->email)->first();
         if ($user){
                Session::flash('error','invalid email, try again!');
                return view('register');
-           }
+        } else {
+            try {
+                DB::beginTransaction();
+                $user = new User();
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->password = Hash::make($request->password);
+                $user->save();
+                DB::commit();
+                return redirect()->route('show.login');
+            } catch (\Exception $exception){
+                DB::rollBack();
+                return $exception->getMessage();
+            }
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-        return redirect()->route('show.login');
+        }
     }
 
     public function showFormLogin()

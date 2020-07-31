@@ -7,9 +7,11 @@ use App\Http\Requests\StoreRequest;
 use App\Note;
 use App\NoteDetail;
 use App\Status;
+use Dotenv\Loader\Parser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 use mysql_xdevapi\Exception;
 
@@ -19,7 +21,13 @@ class NoteController extends Controller
     {
         $todos = Note::all();
         $status = Status::all();
-        return view('todo', compact('todos','status'));
+        $redis = Redis::connection();
+        $redis->set('todoList', "$todos");
+//        dd($redis->get('todoList'));
+//        $listTodo = $redis->get('todoList'); // json
+//        dd(json_decode($listTodo,true));
+
+        return view('todo', compact('todos', 'status'));
     }
 
     public function create()
@@ -82,7 +90,10 @@ class NoteController extends Controller
             $todo->delete();
             activity()->log('delete todo ' . $todo->name);
             DB::commit();
-            return redirect()->route('index');
+//            return redirect()->route('index');
+            return response()->json([
+                'status' => 'success'
+            ]);
         } catch (\Exception $exception) {
             DB::rollBack();
             return $exception->getMessage();

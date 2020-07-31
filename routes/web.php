@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function (){
     Route::post('{id}/todo-add-note','NoteDetailController@store')->name('store.note');
     Route::get('{id}/update-todo','NoteController@edit')->name('edit.todo');
     Route::post('{id}/update-todo','NoteController@update')->name('update.todo');
-    Route::get('{id}/delete-todo', 'NoteController@destroy')->name('delete.todo');
+    Route::get('delete-todo/{id}', 'NoteController@destroy')->name('delete.todo');
     Route::get('search','NoteController@search')->name('search.todo');
     Route::get('status/update-todo/{id?}','NoteController@updateStatus')->name('todo.change_status');
     Route::get('log-activity','LogActivity@getLog')->name('log');

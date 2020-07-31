@@ -74,7 +74,6 @@
         $(".data").on("change", function () {
             let todoId = $(this).data('id');
             let status = $(this).val();
-            console.log("todoID: " + todoId);
             if (confirm(`Are you sure ?`)) {
                 $.ajax({
                     url: `{{ route('todo.change_status') }}/${todoId}`,
@@ -85,11 +84,27 @@
                     success: function (result) {
                         if (result.success) {
                             console.log(result);
-                            window.location.reload();
+                            // window.location.reload();
                         }
                     },
                     error: (error) => {
                         alert(JSON.stringify(error));
+                    }
+                });
+            }
+        });
+
+        $(".delete").on("click", function (e) {
+            e.preventDefault();
+            let todoId = $(this).attr('data-id');
+            if(confirm("Are you sure delete todo?")){
+                $.ajax({
+                    url: $(this).attr("href"),
+                    type: 'get',
+                    success: function (result) {
+                        if(result.status == 'success'){
+                            $("#" + todoId).fadeOut();
+                        }
                     }
                 });
             }

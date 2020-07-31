@@ -14,6 +14,6 @@ class Note extends Model
 
     public function noteDetail()
     {
-        return $this->hasOne('App\NoteDetail','note_id');
+        return $this->hasMany('App\NoteDetail','note_id');
     }
 }
