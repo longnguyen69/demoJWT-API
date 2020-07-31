@@ -23,6 +23,7 @@ class NoteController extends Controller
         $status = Status::all();
         $redis = Redis::connection();
         $redis->set('todoList', "$todos");
+
 //        dd($redis->get('todoList'));
 //        $listTodo = $redis->get('todoList'); // json
 //        dd(json_decode($listTodo,true));
@@ -66,6 +67,9 @@ class NoteController extends Controller
     public function edit($id)
     {
         $todo = Note::findOrFail($id);
+        if ($todo && $todo->status == 3) {
+            abort('404');
+        }
         $categories = Category::all();
         return view('editTodo', compact('todo', 'categories'));
     }

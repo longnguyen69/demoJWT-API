@@ -3,19 +3,19 @@
     <div class="col-md-6">
         <br>
         <div class="card">
-            <h5 class="card-header">{{ $todo[0]->note->name }}</h5>
+            <h5 class="card-header">{{ $todo->note->name }}</h5>
             <div class="card-body">
-                @if($todo[0]->desc == null)
-                    <form method="post" action="{{ route('store.note',['id'=>$todo[0]->note_id]) }}">
+                @if($todo->desc == null)
+                    <form method="post" action="{{ route('store.note',['id'=>$todo->note_id]) }}">
                         @csrf
                         <textarea name="desc" class="form-control" placeholder="Add note here!"></textarea>
                         <br>
                         <button type="submit" class="btn btn-success">Add note</button>
                     </form>
                 @else
-                    <form method="post" action="{{ route('store.note',['id'=>$todo[0]->note_id])  }}">
+                    <form method="post" action="{{ route('store.note',['id'=>$todo->note_id])  }}">
                         @csrf
-                        <textarea name="desc" class="form-control">{{ $todo[0]->desc }}</textarea>
+                        <textarea name="desc" class="form-control">{{ $todo->desc }}</textarea>
                         <br>
                         <button type="submit" class="btn btn-success">Edit note</button>
                     </form>
