@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\NoteDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class NoteDetailController extends Controller
 {
