@@ -26,7 +26,7 @@ class NoteController extends Controller
 
 //        dd($redis->get('todoList'));
 //        $listTodo = $redis->get('todoList'); // json
-//        dd(json_decode($listTodo,true));
+//        dd($listTodo);
 
         return view('todo', compact('todos', 'status'));
     }
@@ -122,5 +122,18 @@ class NoteController extends Controller
             'data' => $todo,
             'status_todo' => $todo->status
         ]);
+    }
+
+    public function recent()
+    {
+        $todos = json_decode(Redis::get('recent'), true);
+//        dd($todos);
+        return view('recent', compact('todos'));
+    }
+
+    public function clearCache()
+    {
+        Redis::del('recent');
+        return redirect()->route('index');
     }
 }

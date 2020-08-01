@@ -8,26 +8,23 @@ use Illuminate\Support\Facades\Redis;
 
 class Recent
 {
-    public $items = [];
+    public $items = null;
 
     public function __construct()
     {
-        $this->items = Redis::get('recent') ? Redis::get('recent') : [];
+        $this->items = Redis::get('recent') ? Redis::get('recent') : null;
     }
 
     public function add($todo)
     {
         if (Auth::check()) {
-            $item = [
-                'todo_id' => $todo->node_id,
-                'todo_name' => $todo->desc
-            ];
-            if ($this->items == null) {
-                $this->items[$todo->note_id] = $item;
+            if (empty($this->items)) {
+                $this->items[$todo->id] = $todo;
                 Redis::set('recent', $this->items);
             } else {
                 $arr = json_decode($this->items, true);
-                Redis::set('recent', $arr[$todo->note_id] = $item);
+                $arr[$todo->id] = $todo;
+                Redis::set('recent', json_encode($arr));
             }
         }
     }
