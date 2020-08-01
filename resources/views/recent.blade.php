@@ -11,19 +11,25 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($todos as $todo)
-                <tr>
-                    <th scope="row"></th>
-                    <td>{{ $todo['id'] }}</td>
-                    <td>{{ $todo['name'] }}</td>
-                    <td>{{ $todo['category_id'] }}</td>
-                </tr>
-            </tbody>
-            @empty
+            @if($todos)
+                @forelse($todos as $todo)
+                    <tr>
+                        <th scope="row"></th>
+                        <td>{{ $todo['id'] }}</td>
+                        <td>{{ $todo['name'] }}</td>
+                        <td>{{ $todo['category_id'] }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td>No recent</td>
+                    </tr>
+                @endforelse
+            @else
                 <tr>
                     <td>No recent</td>
                 </tr>
-            @endforelse
+            @endif
+            </tbody>
         </table>
     </div>
 @endsection
