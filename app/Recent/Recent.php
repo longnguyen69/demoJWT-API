@@ -18,16 +18,12 @@ class Recent
     public function add($todo)
     {
         if (Auth::check()) {
-            $item = [
-                'todo_id' => $todo->node_id,
-                'todo_name' => $todo->desc
-            ];
             if (empty($this->items)) {
-                $this->items[$todo->note_idset] = $item;
+                $this->items[$todo->id] = $todo;
                 Redis::set('recent', $this->items);
             } else {
                 $arr = json_decode($this->items, true);
-                $arr[$todo->note_id] = $item;
+                $arr[$todo->id] = $todo;
                 Redis::set('recent', json_encode($arr));
             }
         }

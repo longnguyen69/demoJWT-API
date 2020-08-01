@@ -123,4 +123,17 @@ class NoteController extends Controller
             'status_todo' => $todo->status
         ]);
     }
+
+    public function recent()
+    {
+        $todos = json_decode(Redis::get('recent'), true);
+//        dd($todos);
+        return view('recent', compact('todos'));
+    }
+
+    public function clearCache()
+    {
+        Redis::del('recent');
+        return redirect()->route('index');
+    }
 }
