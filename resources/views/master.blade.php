@@ -38,6 +38,11 @@
                     <a class="nav-link" href="{{route('show.register')}}">Register</a>
                 @endif
             </li>
+            <li class="nav-item">
+                @if(\Illuminate\Support\Facades\Auth::user())
+                    <a class="nav-link" href="{{ route('total') }}">Category</a>
+                @endif
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
