@@ -11,4 +11,9 @@ class Category extends Model
     {
         return $this->hasMany(Note::class);
     }
+
+    public function total()
+    {
+        return $this->note()->count();
+    }
 }

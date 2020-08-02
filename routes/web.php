@@ -35,5 +35,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('log-activity', 'LogActivity@getLog')->name('log');
     Route::get('recent', 'NoteController@recent')->name('recent');
     Route::get('clear-cache', 'NoteController@clearCache')->name('clear');
+    Route::get('total', 'CategoryController@index')->name('total');
 });
 
