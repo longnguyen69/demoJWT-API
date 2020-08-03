@@ -8,7 +8,6 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
@@ -26,7 +25,6 @@ class UserController extends Controller
 
     public function register(RegisterRequest $request)
     {
-//        $users = User::all();
         $user = User::where('email',$request->email)->first();
         if ($user){
                Session::flash('error','invalid email, try again!');
@@ -64,8 +62,6 @@ class UserController extends Controller
             'password' => $password
         ];
         if (Auth::attempt($user)){
-//            $redis = Redis::connection();
-//            $redis->set('username',Auth::user()->name);
             return redirect()->route('index');
         } else {
             Session::flash('error','email or password incorrect');

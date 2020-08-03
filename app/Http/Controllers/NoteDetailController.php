@@ -6,8 +6,6 @@ use App\Note;
 use App\NoteDetail;
 use App\Recent\Recent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class NoteDetailController extends Controller
 {
@@ -16,6 +14,7 @@ class NoteDetailController extends Controller
         $todo = NoteDetail::where('note_id','=',$note_id)->first();
         $note = Note::find($note_id);
         $recent->add($note);
+
         return view('todoDetail',compact('todo'));
     }
 
