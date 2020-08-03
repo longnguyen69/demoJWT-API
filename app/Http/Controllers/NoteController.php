@@ -148,4 +148,47 @@ class NoteController extends Controller
             'todos' => $todos
         ]);
     }
+
+    public function addTodo($request)
+    {
+        $todo = new Note();
+        $todo->name = $request->name;
+        $todo->category_id = $request->category;
+        $todo->status = self::DEFAULT;
+        $todo->user_id = $request->user_id;
+        $todo->save();
+    }
+
+    public function addTodoDetail($request)
+    {
+        $todoDetail = new NoteDetail();
+        $todoDetail->note_id = $request->note_id;
+        $todoDetail->desc = $request->desc;
+        $todoDetail->save();
+    }
+
+    public function storeApi(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $this->addTodo($request);
+            $this->addTodoDetail($request);
+            DB::commit();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'add completed'
+            ]);
+        } catch (\Exception $exception)
+        {
+            DB::rollBack();
+
+            return response()->json([
+                'code' => 500,
+                'message' => $exception->getMessage()
+            ]);
+        }
+
+
+    }
 }
