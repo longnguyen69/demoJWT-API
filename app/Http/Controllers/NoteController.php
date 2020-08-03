@@ -7,26 +7,22 @@ use App\Http\Requests\StoreRequest;
 use App\Note;
 use App\NoteDetail;
 use App\Status;
-use Dotenv\Loader\Parser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
-use mysql_xdevapi\Exception;
+
 
 class NoteController extends Controller
 {
+    protected const DEFAULT = 1;
     public function index()
     {
         $todos = Note::all();
         $status = Status::all();
         $redis = Redis::connection();
         $redis->set('todoList', "$todos");
-
-//        dd($redis->get('todoList'));
-//        $listTodo = $redis->get('todoList'); // json
-//        dd($listTodo);
 
         return view('todo', compact('todos', 'status'));
     }
@@ -40,14 +36,12 @@ class NoteController extends Controller
 
     public function store(StoreRequest $request)
     {
-
         try {
-            DB::beginTransaction(); // start transaction
+            DB::beginTransaction();
             $todo = new Note();
             $todo->name = $request->name;
             $todo->category_id = $request->category;
-            $defaul = 1;
-            $todo->status = $defaul;
+            $todo->status = self::DEFAULT;
             $user = Auth::user();
             $todo->user_id = $user->id;
             $todo->save();
@@ -57,10 +51,12 @@ class NoteController extends Controller
             DB::commit();
             activity()->by($user)->log('add todo');
             Session::flash('success', 'Add todo completed!');
+
             return redirect()->route('show.create');
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             DB::rollBack();
-            return $e->getMessage();
+
+            return $exception->getMessage();
         }
     }
 
@@ -71,6 +67,7 @@ class NoteController extends Controller
             abort('404');
         }
         $categories = Category::all();
+
         return view('editTodo', compact('todo', 'categories'));
     }
 
@@ -81,6 +78,7 @@ class NoteController extends Controller
         $todo->category_id = $request->category;
         $todo->status = $request->status;
         $todo->save();
+
         return redirect()->route('index');
     }
 
@@ -94,12 +92,13 @@ class NoteController extends Controller
             $todo->delete();
             activity()->log('delete todo ' . $todo->name);
             DB::commit();
-//            return redirect()->route('index');
+
             return response()->json([
                 'status' => 'success'
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();
+
             return $exception->getMessage();
         }
     }
@@ -107,6 +106,7 @@ class NoteController extends Controller
     public function search(Request $request)
     {
         $todos = Note::where('name', 'LIKE', '%' . $request->search . '%')->get();
+
         return view('todo', compact('todos'));
     }
 
@@ -127,13 +127,25 @@ class NoteController extends Controller
     public function recent()
     {
         $todos = json_decode(Redis::get('recent'), true);
-//        dd($todos);
+
         return view('recent', compact('todos'));
     }
 
     public function clearCache()
     {
         Redis::del('recent');
+
         return redirect()->route('index');
+    }
+
+    public function getTodoApi()
+    {
+        $todos = Note::all();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Get All todo',
+            'todos' => $todos
+        ]);
     }
 }
