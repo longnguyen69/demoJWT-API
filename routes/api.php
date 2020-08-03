@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('list-todo', 'NoteController@getTodoApi');
 Route::post('store-todo', 'NoteController@storeApi');
+Route::get('find/{id}', 'NoteController@find');
 

@@ -167,7 +167,7 @@ class NoteController extends Controller
         $todoDetail->save();
     }
 
-    public function storeApi(Request $request)
+    public function storeApi($request)
     {
         try {
             DB::beginTransaction();
@@ -188,7 +188,23 @@ class NoteController extends Controller
                 'message' => $exception->getMessage()
             ]);
         }
+    }
 
+    public function find($id)
+    {
+        try {
+            $todo = Note::find($id);
 
+            return response()->json([
+                'code' => 200,
+                'message' => 'get todo',
+                'todo' => $todo
+            ]);
+        } catch (\Exception $exception){
+            return response()->json([
+                'code' => 500,
+                'message' => $exception->getMessage()
+            ]);
+        }
     }
 }
