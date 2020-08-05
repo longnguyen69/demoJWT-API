@@ -18,6 +18,11 @@ class NoteDetailController extends Controller
         $this->noteDetail = $noteDetail;
     }
 
+    /**
+     * @param Recent $recent
+     * @param $note_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Recent $recent, $note_id)
     {
         $todo = $this->noteDetail->findByNoteId($note_id);
@@ -27,6 +32,11 @@ class NoteDetailController extends Controller
         return view('todoDetail',compact('todo'));
     }
 
+    /**
+     * @param $note_id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store($note_id, Request $request)
     {
         $this->noteDetail->updateNoteDetail($note_id, $request->desc);

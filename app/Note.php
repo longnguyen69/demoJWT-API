@@ -45,6 +45,11 @@ class Note extends Model
         return Note::find($id);
     }
 
+    /**
+     * @param $name
+     * @param $category
+     * @return Note
+     */
     public function createNote($name, $category )
     {
         $todo = new Note();
@@ -57,6 +62,11 @@ class Note extends Model
         return $todo;
     }
 
+    /**
+     * @param $id
+     * @param $name
+     * @param $category
+     */
     public function updateNote($id, $name, $category)
     {
         $todo = $this->findNote($id);
@@ -65,22 +75,39 @@ class Note extends Model
         $todo->save();
     }
 
+    /**
+     * @param $todo
+     */
     public function destroyNote($todo)
     {
         $todo->delete();
     }
 
+    /**
+     * @param $keyword
+     * @return mixed
+     */
     public function searchNote($keyword)
     {
         return Note::where('name', 'LIKE', '%' . $keyword . '%')->get();
     }
 
+    /**
+     * @param $id
+     * @param $status
+     */
     public function updateStatus($id, $status)
     {
         $todo = Note::find($id);
         $todo->status = $status;
         $todo->save();
     }
+
+    /**
+     * @param $name
+     * @param $category
+     * @param $user_id
+     */
     public function addTodo($name, $category, $user_id)
     {
         $todo = new Note();
@@ -91,6 +118,10 @@ class Note extends Model
         $todo->save();
     }
 
+    /**
+     * @param $note_id
+     * @param $desc
+     */
     public function addTodoDetail($note_id, $desc)
     {
         $todoDetail = new NoteDetail();

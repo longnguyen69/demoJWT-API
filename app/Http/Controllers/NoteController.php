@@ -30,6 +30,9 @@ class NoteController extends Controller
         $this->noteDetail = $noteDetail;
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $todos = $this->note->getAll();
@@ -40,6 +43,9 @@ class NoteController extends Controller
         return view('todo', compact('todos', 'status'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         $categories = $this->category->getAll();
@@ -47,6 +53,10 @@ class NoteController extends Controller
         return view('create', compact('categories'));
     }
 
+    /**
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\RedirectResponse|string
+     */
     public function store(StoreRequest $request)
     {
         try {
@@ -65,6 +75,10 @@ class NoteController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit($id)
     {
         $todo = $this->note->findNote($id);
@@ -76,6 +90,11 @@ class NoteController extends Controller
         return view('editTodo', compact('todo', 'categories'));
     }
 
+    /**
+     * @param $id
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update($id, StoreRequest $request)
     {
         $this->note->updateNote($id, $request->name, $request->category);
@@ -83,6 +102,10 @@ class NoteController extends Controller
         return redirect()->route('index');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|string
+     */
     public function destroy($id)
     {
         try {
@@ -111,6 +134,11 @@ class NoteController extends Controller
         return view('todo', compact('todos','status'));
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateStatus(Request $request, $id)
     {
         $this->note->updateStatus($id, $request->status);
@@ -120,6 +148,9 @@ class NoteController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function recent()
     {
         $todos = json_decode(Redis::get('recent'), true);
@@ -127,6 +158,9 @@ class NoteController extends Controller
         return view('recent', compact('todos'));
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function clearCache()
     {
         Redis::del('recent');
@@ -134,6 +168,9 @@ class NoteController extends Controller
         return redirect()->route('index');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTodoApi()
     {
         $todos = $this->note->getAll();
