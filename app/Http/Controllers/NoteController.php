@@ -16,11 +16,24 @@ use Illuminate\Support\Facades\Session;
 
 class NoteController extends Controller
 {
-    protected const DEFAULT = 1;
+
+    protected $note;
+    protected $category;
+    protected $status;
+    protected $noteDetail;
+
+    public function __construct(Note $note, Category $category, Status $status, NoteDetail $noteDetail)
+    {
+        $this->note = $note;
+        $this->category = $category;
+        $this->status = $status;
+        $this->noteDetail = $noteDetail;
+    }
+
     public function index()
     {
-        $todos = Note::all();
-        $status = Status::all();
+        $todos = $this->note->getAll();
+        $status = $this->status->getAll();
         $redis = Redis::connection();
         $redis->set('todoList', "$todos");
 
@@ -29,7 +42,7 @@ class NoteController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = $this->category->getAll();
 
         return view('create', compact('categories'));
     }
@@ -38,18 +51,10 @@ class NoteController extends Controller
     {
         try {
             DB::beginTransaction();
-            $todo = new Note();
-            $todo->name = $request->name;
-            $todo->category_id = $request->category;
-            $todo->status = self::DEFAULT;
-            $user = Auth::user();
-            $todo->user_id = $user->id;
-            $todo->save();
-            $todoDetail = new NoteDetail();
-            $todoDetail->note_id = $todo->id;
-            $todoDetail->save();
+            $note = $this->note->createNote($request->name, $request->category);
+            $this->noteDetail->createNoteDetail($note->id);
             DB::commit();
-            activity()->by($user)->log('add todo');
+            activity()->by(Auth::user())->log('add todo');
             Session::flash('success', 'Add todo completed!');
 
             return redirect()->route('show.create');
@@ -62,22 +67,18 @@ class NoteController extends Controller
 
     public function edit($id)
     {
-        $todo = Note::findOrFail($id);
+        $todo = $this->note->findNote($id);
         if ($todo && $todo->status == 3) {
             abort('404');
         }
-        $categories = Category::all();
+        $categories = $this->category->getAll();
 
         return view('editTodo', compact('todo', 'categories'));
     }
 
     public function update($id, StoreRequest $request)
     {
-        $todo = Note::findOrFail($id);
-        $todo->name = $request->name;
-        $todo->category_id = $request->category;
-        $todo->status = $request->status;
-        $todo->save();
+        $this->note->updateNote($id, $request->name, $request->category);
 
         return redirect()->route('index');
     }
@@ -86,11 +87,11 @@ class NoteController extends Controller
     {
         try {
             DB::beginTransaction();
-            $todo = Note::findOrFail($id);
-            $note = NoteDetail::where('note_id', '=', $id)->first();
-            $note->delete();
-            $todo->delete();
-            activity()->log('delete todo ' . $todo->name);
+            $note = $this->note->findNote($id);
+            $noteDetail = $this->noteDetail->findByNoteId($note->id);
+            $this->noteDetail->destroyNoteDetail($noteDetail);
+            $this->note->destroyNote($note);
+            activity()->log('delete todo ' . $note->name);
             DB::commit();
 
             return response()->json([
@@ -105,22 +106,17 @@ class NoteController extends Controller
 
     public function search(Request $request)
     {
-        $todos = Note::where('name', 'LIKE', '%' . $request->search . '%')->get();
-
-        return view('todo', compact('todos'));
+        $todos = $this->note->searchNote($request->search);
+        $status = $this->status->getAll();
+        return view('todo', compact('todos','status'));
     }
 
     public function updateStatus(Request $request, $id)
     {
-        $todo = Note::find($id);
-        $todo->status = $request->input('status');
-        $todo->save();
-
+        $this->note->updateStatus($id, $request->status);
         return response()->json([
             'success' => true,
             'status' => '200',
-            'data' => $todo,
-            'status_todo' => $todo->status
         ]);
     }
 
@@ -140,7 +136,7 @@ class NoteController extends Controller
 
     public function getTodoApi()
     {
-        $todos = Note::all();
+        $todos = $this->note->getAll();
 
         return response()->json([
             'status' => 200,
@@ -149,38 +145,21 @@ class NoteController extends Controller
         ]);
     }
 
-    public function addTodo($request)
-    {
-        $todo = new Note();
-        $todo->name = $request->name;
-        $todo->category_id = $request->category;
-        $todo->status = self::DEFAULT;
-        $todo->user_id = $request->user_id;
-        $todo->save();
-    }
 
-    public function addTodoDetail($request)
-    {
-        $todoDetail = new NoteDetail();
-        $todoDetail->note_id = $request->note_id;
-        $todoDetail->desc = $request->desc;
-        $todoDetail->save();
-    }
 
     public function storeApi($request)
     {
         try {
             DB::beginTransaction();
-            $this->addTodo($request);
-            $this->addTodoDetail($request);
+            $this->note->addTodo($request->name, $request->category,$request->user_id);
+            $this->note->addTodoDetail($request->note_id, $request->desc);
             DB::commit();
 
             return response()->json([
                 'status' => 200,
                 'message' => 'add completed'
             ]);
-        } catch (\Exception $exception)
-        {
+        } catch (\Exception $exception) {
             DB::rollBack();
 
             return response()->json([
@@ -193,14 +172,14 @@ class NoteController extends Controller
     public function find($id)
     {
         try {
-            $todo = Note::find($id);
+            $todo = $this->note->findNote($id);
 
             return response()->json([
                 'code' => 200,
                 'message' => 'get todo',
                 'todo' => $todo
             ]);
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
                 'code' => 500,
                 'message' => $exception->getMessage()

@@ -9,10 +9,19 @@ use Illuminate\Http\Request;
 
 class NoteDetailController extends Controller
 {
+    protected $note;
+    protected $noteDetail;
+
+    public function __construct(Note $note, NoteDetail $noteDetail)
+    {
+        $this->note = $note;
+        $this->noteDetail = $noteDetail;
+    }
+
     public function show(Recent $recent, $note_id)
     {
-        $todo = NoteDetail::where('note_id','=',$note_id)->first();
-        $note = Note::find($note_id);
+        $todo = $this->noteDetail->findByNoteId($note_id);
+        $note = $this->note->findNote($note_id);
         $recent->add($note);
 
         return view('todoDetail',compact('todo'));
@@ -20,9 +29,7 @@ class NoteDetailController extends Controller
 
     public function store($note_id, Request $request)
     {
-        $note = NoteDetail::where('note_id','=',$note_id)->first();
-        $note->desc = $request->desc;
-        $note->save();
+        $this->noteDetail->updateNoteDetail($note_id, $request->desc);
 
         return back();
     }

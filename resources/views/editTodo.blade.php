@@ -23,14 +23,6 @@
                     @endforeach
                 </select>
             </div>
-            <div class="form-group">
-                <label>Status</label>
-                <select class="form-control" id="exampleFormControlSelect1" name="status">
-                    <option value="1">Do not</option>
-                    <option value="2">Doing</option>
-                    <option value="3">Done</option>
-                </select>
-            </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
