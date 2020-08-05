@@ -16,4 +16,9 @@ class Category extends Model
     {
         return $this->note()->count();
     }
+
+    public function getAll()
+    {
+        return Category::all();
+    }
 }
