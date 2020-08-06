@@ -52,7 +52,7 @@ class Note extends Model
      */
     public function createNote($name, $category )
     {
-        $todo = new Note();
+
         $todo->name = $name;
         $todo->category_id = $category;
         $todo->status = self::DEFAULT;

@@ -40,7 +40,7 @@ class NoteController extends Controller
         $redis = Redis::connection();
         $redis->set('todoList', "$todos");
 
-        return view('todo', compact('todos', 'status'));
+        return view('note/todo', compact('todos', 'status'));
     }
 
     /**
@@ -50,7 +50,7 @@ class NoteController extends Controller
     {
         $categories = $this->category->getAll();
 
-        return view('create', compact('categories'));
+        return view('note/create', compact('categories'));
     }
 
     /**
@@ -63,9 +63,9 @@ class NoteController extends Controller
             DB::beginTransaction();
             $note = $this->note->createNote($request->name, $request->category);
             $this->noteDetail->createNoteDetail($note->id);
-            DB::commit();
             activity()->by(Auth::user())->log('add todo');
             Session::flash('success', 'Add todo completed!');
+            DB::commit();
 
             return redirect()->route('show.create');
         } catch (\Exception $exception) {
@@ -73,6 +73,7 @@ class NoteController extends Controller
 
             return $exception->getMessage();
         }
+
     }
 
     /**
@@ -87,7 +88,7 @@ class NoteController extends Controller
         }
         $categories = $this->category->getAll();
 
-        return view('editTodo', compact('todo', 'categories'));
+        return view('note/editTodo', compact('todo', 'categories'));
     }
 
     /**
@@ -116,7 +117,6 @@ class NoteController extends Controller
             $this->note->destroyNote($note);
             activity()->log('delete todo ' . $note->name);
             DB::commit();
-
             return response()->json([
                 'status' => 'success'
             ]);
@@ -131,7 +131,7 @@ class NoteController extends Controller
     {
         $todos = $this->note->searchNote($request->search);
         $status = $this->status->getAll();
-        return view('todo', compact('todos','status'));
+        return view('note/todo', compact('todos','status'));
     }
 
     /**
@@ -155,7 +155,7 @@ class NoteController extends Controller
     {
         $todos = json_decode(Redis::get('recent'), true);
 
-        return view('recent', compact('todos'));
+        return view('recent/recent', compact('todos'));
     }
 
     /**
