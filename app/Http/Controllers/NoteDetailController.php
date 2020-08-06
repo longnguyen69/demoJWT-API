@@ -29,7 +29,7 @@ class NoteDetailController extends Controller
         $note = $this->note->findNote($note_id);
         $recent->add($note);
 
-        return view('note/todoDetail',compact('todo'));
+        return view('note.todoDetail', compact('todo'));
     }
 
     /**
