@@ -53,13 +53,13 @@ class Note extends Model
     public function createNote($name, $category )
     {
 
-        $todo->name = $name;
-        $todo->category_id = $category;
-        $todo->status = self::DEFAULT;
+        $this->name = $name;
+        $this->category_id = $category;
+        $this->status = self::DEFAULT;
         $user = Auth::user();
-        $todo->user_id = $user->id;
-        $todo->save();
-        return $todo;
+        $this->user_id = $user->id;
+        $this->save();
+        return $this;
     }
 
     /**
