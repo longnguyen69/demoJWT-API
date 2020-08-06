@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+
 use App\Category;
 
 class CategoryController extends Controller
@@ -17,6 +19,6 @@ class CategoryController extends Controller
     {
         $categories = $this->category->getAll();
 
-        return view('countCategory', compact('categories'));
+        return view('category/countCategory', compact('categories'));
     }
 }

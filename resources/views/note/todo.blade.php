@@ -1,6 +1,10 @@
+@php
+    /**
+ * @var App\Note $todo
+*/
+@endphp
 @extends('master')
 @section('content')
-
     <div class="col-md-10">
         <br>
         <div class="col-md-8">

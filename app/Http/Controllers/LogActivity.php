@@ -8,8 +8,8 @@ class LogActivity extends Controller
 {
     public function getLog()
     {
-        $logs = Activity::all();
+        $logs = Activity::paginate(25);
 
-        return view('logActivity',compact('logs'));
+        return view('log/logActivity',compact('logs'));
     }
 }

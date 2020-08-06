@@ -22,4 +22,5 @@
             </tbody>
         </table>
     </div>
+    {{ $logs->links()}}
 @endsection
